@@ -36,10 +36,9 @@ function createImageMarkup(galleryItems) {
 };
 console.log(createImageMarkup(galleryItems));
 function onImageClick(event) {
-   //  console.log(event.target);
+  
 event.preventDefault();
-// const originalUrl = event.target.dataset.source;
-// const captions = event.target.alt
+
 
 const lightbox = new SimpleLightbox(".gallery a", {
    captionsData: "alt",
