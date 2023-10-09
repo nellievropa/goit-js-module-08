@@ -132,123 +132,178 @@
 // }
 
 
+// майже сталий вираз
+// є функції save, яка відпоавідає за збереження данних та load, яка отримує значення з локалсторідж
+//  ці функції створюються, щоб зберігти час та сили і не повторювати код
+// бо операції з ключами локалсторіджа одні й ті самі
+
+const save = (key, value) => {
+    try {
+      const serializedState = JSON.stringify(value);
+      localStorage.setItem(key, serializedState);
+    } catch (error) {
+      console.error("Set state error: ", error.message);
+    }
+  };
+  
+//   викликаємо цю функцію і передаємо дані для збереження
+save('TEST:', {name:"Hello World!!"});
+save('TEST1:', "Hello all the World!!");
+
+  const load = key => {
+    try {
+      const serializedState = localStorage.getItem(key);
+      return serializedState === null ? undefined : JSON.parse(serializedState);
+    } catch (error) {
+      console.error("Get state error: ", error.message);
+    }
+  };
+  
+  console.log(load('TEST:'));
+
+  export default {
+    save,
+    load,
+  };
 
 
 
-// const content = document.querySelector('.content')
-// const restart = document.querySelector('.js-restart');
-// content.insertAdjacentHTML('beforeend', createMarkup())
-// content.addEventListener('click', onClick);
-// restart.addEventListener('click', onRestart);
-// // назви ключів виносяться в змінні, бо до них будемо звертатися декілька разів
-// const KEY_X = 'PlayerX';
-// const KEY_O = 'PlayerO';
-// let player = 'X';
-// // масиви для збереження даних про ходи
-// let stepX = JSON.parse(localStorage.getItem(KEY_X)) || [];
-// let stepO = JSON.parse(localStorage.getItem(KEY_O)) || [];
+const content = document.querySelector('.content')
+const restart = document.querySelector('.js-restart');
+// const winner = document.querySelector('.js-winner');
+content.insertAdjacentHTML('beforeend', createMarkup())
+content.addEventListener('click', onClick);
+restart.addEventListener('click', onRestart);
+// winner.addEventListener('click', onCurrentWinner);
+// назви ключів виносяться в змінні, бо до них будемо звертатися декілька разів
+const KEY_X = 'PlayerX';
+const KEY_O = 'PlayerO';
+let player = 'X';
+// масиви для збереження даних про ходи
+let stepX = JSON.parse(localStorage.getItem(KEY_X)) || [];
+let stepO = JSON.parse(localStorage.getItem(KEY_O)) || [];
 
-// const win = [
-//     [1, 2, 3],
-//     [3, 6, 9],
-//     [4, 5, 6],
-//     [7, 8, 9],
-//     [1, 4, 7],
-//     [2, 5, 8],
-//     [1, 5, 9],
-//     [3, 5, 7]
-// ];
+// const WIN_X = 'сurrentWinX';
+// const WIN_O = 'сurrentWinO';
+// let сurrentWinX = 0;
+// let currentWinO = 0;
 
-// function startGame() {
-//     // console.dir(content);
-//     // для HTML не приміняється forEach
-//     // console.log(stepX);
-//     // console.log(stepO);
-//     [...content.children].forEach(item => {
-//         const id = Number(item.dataset.id)
-//         // console.log(id);
-//         // console.log(stepX)
-//         // console.log(stepX.includes(id))
-//         if(stepX.includes(id)) {
-//             item.textContent = 'X';
-//         }else if(stepO.includes(id)){
-//             item.textContent = 'O';
+// let winHistory_X = JSON.parse(localStorage.getItem(WIN_X));
+// let winHistory_O = JSON.parse(localStorage.getItem(WIN_O));
 
-//         }
-//     })
-// }
-// startGame();
+const win = [
+    [1, 2, 3],
+    [3, 6, 9],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 4, 7],
+    [2, 5, 8],
+    [1, 5, 9],
+    [3, 5, 7]
+];
 
-// // приклад методів сам і еврі
-// // const stepX = [2, 5, 3, 8, 9];
-// // const test = [1, 2, 3]
-// // // console.log(test.every(id => stepX.includes(id)))
-// // const isTrue = test.every(id => stepX.includes(id));
-// // // візьмемо наш масив win і подивимось чи ХОТЬ ОДИН його елемент item відповідає
-// // console.log(win.some(item => console.log(item)))
+function startGame() {
+    // console.dir(content);
+    // для HTML не приміняється forEach
+    // console.log(stepX);
+    // console.log(stepO);
+    [...content.children].forEach(item => {
+        const id = Number(item.dataset.id)
+        // console.log(id);
+        // console.log(stepX)
+        // console.log(stepX.includes(id))
+        if(stepX.includes(id)) {
+            item.textContent = 'X';
+        }else if(stepO.includes(id)){
+            item.textContent = 'O';
+
+        }
+    })
+}
+startGame();
+
+// приклад методів сам і еврі
+// const stepX = [2, 5, 3, 8, 9];
+// const test = [1, 2, 3]
+// // console.log(test.every(id => stepX.includes(id)))
+// const isTrue = test.every(id => stepX.includes(id));
+// // візьмемо наш масив win і подивимось чи ХОТЬ ОДИН його елемент item відповідає
+// console.log(win.some(item => console.log(item)))
 
 
-// // перебираємо масив win методом some, далі на кожній ітерації some перебираємо масив stepX.push(id); методм every 
-// // і дивимся, щоб співпали всі числа з виграшною комбінацією
-// // метод every потребує щоб співпали всі значення, тільки тоді він видась TRUE
-// function isWinner(arr) {
-//     return win.some(item => item.every(id => arr.includes(id)))
-//     }
+// перебираємо масив win методом some, далі на кожній ітерації some перебираємо масив stepX.push(id); методм every 
+// і дивимся, щоб співпали всі числа з виграшною комбінацією
+// метод every потребує щоб співпали всі значення, тільки тоді він видась TRUE
+function isWinner(arr) {
+    return win.some(item => item.every(id => arr.includes(id)))
+    }
     
-// function createMarkup() {
-//     let markup = '';
-//     for (let i = 1; i <= 9; i += 1)  {
-// markup += `<div class="item" data-id="${i}"></div>`
-//     }
-//     return markup;
-// }
+function createMarkup() {
+    let markup = '';
+    for (let i = 1; i <= 9; i += 1)  {
+markup += `<div class="item" data-id="${i}"></div>`
+    }
+    return markup;
+}
 
-// function onClick(evt) {
-//     if (!evt.target.textContent) {
-//         evt.target.textContent = player;
-//         // console.dir(evt.target);
-//         const id = Number(evt.target.dataset.id);
-//     //   по дефолту переможця немає
-//         let result;
-//         if(player === "X") {
-//             stepX.push(id);
-//             localStorage.setItem(KEY_X, JSON.stringify(stepX));
-//             result = isWinner(stepX);
+function onClick(evt) {
+
+    if (!evt.target.textContent) {
+        evt.target.textContent = player;
+        // console.dir(evt.target);
+        const id = Number(evt.target.dataset.id);
+    //   по дефолту переможця немає
+        let result;
+        if(player === "X") {
+            stepX.push(id);
+            localStorage.setItem(KEY_X, JSON.stringify(stepX));
+            result = isWinner(stepX);
+            // winHistory_X = сurrentWinX + 1;
+            // localStorage.setItem(WIN_X, JSON.stringify(winHistory_X));
            
-//         }else {
-//             stepO.push(id)
-//             localStorage.setItem(KEY_O, JSON.stringify(stepO));
-//             result = isWinner(stepO);
-//         }  
-//       setTimeout(() =>{
-//         if (result) {
-//             alert(`Winner is ${player}`);
-//             // очистити поле після того, як знайшли переможця
-//             onRestart();
-//             return;
-//         }
-//         player = player === "X" ? "0" : "X";   
-//       })
+        }else {
+            stepO.push(id)
+            localStorage.setItem(KEY_O, JSON.stringify(stepO));
+            result = isWinner(stepO);
+            // winHistory_O = currentWinO + 1;
+            // localStorage.setItem(WIN_O, JSON.stringify(winHistory_O));
+        }  
+      setTimeout(() =>{
+        if (result) {
+            alert(`Winner is ${player}`);
+            // очистити поле після того, як знайшли переможця
+            onRestart();
+            return;
+        }
+        player = player === "X" ? "0" : "X";   
+      })
      
-//     //    console.log('stepX', stepX);
-//     //    console.log('stepO', stepO);
+    //    console.log('stepX', stepX);
+    //    console.log('stepO', stepO);
            
-//     } else {
-//         alert('Change!!!')
-//     }
+    } else {
+        alert('Change!!!')
+    }
+}
+
+// function onCurrentWinner() {
+// if(winHistory_O < winHistory_X) {
+//     alert(`PlayerX won ${localStorage.getItem(WIN_X)} times`)
+// }else {
+//     alert(`PlayerX won ${localStorage.getItem(WIN_O)} times`)
+// }
+   
 // }
 
-
-
-// function onRestart() {
-//     player = "X";
-//     stepX = [];
-//     stepO = [];
-//     localStorage.removeItem('KEY_X')
-//     localStorage.removeItem('KEY_O')
-//     // localStorage.clear()
-//     content.innerHTML = createMarkup();
-// }
+function onRestart() {
+    player = "X";
+    stepX = [];
+    stepO = [];
+    localStorage.removeItem('KEY_X')
+    localStorage.removeItem('KEY_O')
+    // localStorage.clear()
+    content.innerHTML = createMarkup();
+}
 
 
 
@@ -304,6 +359,3 @@
 // // localStorage.removeItem('local');
 // localStorage.clear();
 // }
-
-
-
